@@ -104,11 +104,15 @@
            (body-fn conf p)
            (ds/wait-pipeline-result (ds/run-pipeline p))))
 
-      ;; Collect outputs
-      (reduce-kv (fn [acc k filename]
-                   (let [content (doall (mapcat (fn [filename]
-                                                  (reader k filename))
-                                                (tio/list-files
-                                                  (tio/join-path output-dirname filename))))]
-                     (assoc acc k content)))
-                 {} outputs)))))
+       ;; Collect outputs
+       (reduce-kv (fn [acc k filename]
+                    (let [extension? "(?:\\.\\w+)?"
+                          shards "\\d+-of-\\d+"
+                          file-pattern (re-pattern (str ".*/" filename extension? "-" shards ".*"))
+                          content (doall (mapcat (fn [filename]
+                                                   (reader k filename))
+                                                 (->> (tio/join-path output-dirname filename)
+                                                      (tio/list-files)
+                                                      (filter #(re-matches file-pattern %1)))))]
+                      (assoc acc k content)))
+                  {} outputs)))))
