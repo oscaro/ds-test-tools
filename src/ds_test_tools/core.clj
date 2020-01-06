@@ -10,10 +10,10 @@
   (if (vector? x) x [x]))
 
 (defn- jsons-reader [k_ filename] (tio/read-jsons-file filename))
-(defn-  edns-reader [k_ filename] (tio/read-edns-file  filename))
+(defn- edns-reader [k_ filename] (tio/read-edns-file filename))
 
 (defn- jsons-writer [k_ filename data] (tio/write-jsons-file filename data))
-(defn-  edns-writer [k_ filename data] (tio/write-edns-file  filename data))
+(defn- edns-writer [k_ filename data] (tio/write-edns-file filename data))
 
 (def ^:private readers
   {:jsons jsons-reader
@@ -78,37 +78,41 @@
          reader (get readers reader reader)]
 
      (with-tempdir [output-dirname]
-       (with-tempdir [input-dirname]
-         ;; Build the conf
-         (let [base-conf (merge base-conf (make-output-keys options outputs output-dirname))
+                   (with-tempdir [input-dirname]
+                                 ;; Build the conf
+                                 (let [base-conf (merge base-conf (make-output-keys options outputs output-dirname))
 
-               conf (reduce-kv (fn [acc k data]
-                                 (let [path (->conf-path k)
-                                       filename (tio/join-path input-dirname
-                                                               (str/join "-" (map name path)))]
+                                       conf (reduce-kv (fn [acc k data]
+                                                         (let [path (->conf-path k)
+                                                               filename (tio/join-path input-dirname
+                                                                                       (str/join "-" (map name path)))]
 
-                                   (if (map? data)
-                                     ;; directories
-                                     (doseq [[subpath data] data]
-                                       (let [full-path (tio/join-path filename subpath)]
-                                         (io/make-parents full-path)
-                                         (writer k full-path data)))
+                                                           (if (map? data)
+                                                             ;; directories
+                                                             (doseq [[subpath data] data]
+                                                               (let [full-path (tio/join-path filename subpath)]
+                                                                 (io/make-parents full-path)
+                                                                 (writer k full-path data)))
 
-                                     ;; single file
-                                     (writer k filename data))
+                                                             ;; single file
+                                                             (writer k filename data))
 
-                                   (assoc-in acc path filename)))
-                               base-conf inputs)]
+                                                           (assoc-in acc path filename)))
+                                                       base-conf inputs)]
 
-           ;; Run the pipeline
-           (body-fn conf p)
-           (ds/wait-pipeline-result (ds/run-pipeline p))))
+                                   ;; Run the pipeline
+                                   (body-fn conf p)
+                                   (ds/wait-pipeline-result (ds/run-pipeline p))))
 
-      ;; Collect outputs
-      (reduce-kv (fn [acc k filename]
-                   (let [content (doall (mapcat (fn [filename]
-                                                  (reader k filename))
-                                                (tio/list-files
-                                                  (tio/join-path output-dirname filename))))]
-                     (assoc acc k content)))
-                 {} outputs)))))
+       ;; Collect outputs
+       (reduce-kv (fn [acc k filename]
+                    (let [extension? "(?:\\.\\w+)?"
+                          shards "\\d+-of-\\d+"
+                          file-pattern (re-pattern (str ".*/" filename extension? "-" shards ".*"))
+                          content (doall (mapcat (fn [filename]
+                                                   (reader k filename))
+                                                 (->> (tio/join-path output-dirname filename)
+                                                      (tio/list-files)
+                                                      (filter #(re-matches file-pattern %1)))))]
+                      (assoc acc k content)))
+                  {} outputs)))))
