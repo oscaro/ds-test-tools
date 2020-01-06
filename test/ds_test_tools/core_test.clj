@@ -82,19 +82,3 @@
 
     (is (= [2 3 4 5] (sort output-incs)))
     (is (= [0 1 2 3] (sort output-decs)))))
-
-(deftest simple-pipeline-same-prefix
-  (let [job (fn [conf p]
-              (let [numbers (ds/read-edn-file (:numbers conf) p)
-                    decs (ds/map dec numbers)]
-                (ds/write-edn-file (tio/join-path (:output-originals conf)) numbers)
-                (ds/write-edn-file (tio/join-path (:output-decs conf)) decs)))
-        {:keys [output-originals output-decs]} (dtt/run-pipeline
-                                           {:use-outputs-map true}
-                                           {:numbers [1 2 3 4]}
-                                           {:output-originals "numbers"
-                                            :output-decs "numbers-decs"}
-                                           job)]
-
-    (is (= [1 2 3 4] (sort output-originals)))
-    (is (= [0 1 2 3] (sort output-decs)))))
