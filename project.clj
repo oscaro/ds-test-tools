@@ -1,4 +1,4 @@
-(defproject com.oscaro/ds-test-tools "0.2.0-SNAPSHOT"
+(defproject com.oscaro/ds-test-tools "0.2.0"
   :description "Tools to test Datasplash pipelines"
   :url "https://github.com/oscaro/ds-test-tools"
   :license {:name "Eclipse Public License"
