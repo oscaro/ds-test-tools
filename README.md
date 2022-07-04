@@ -1,4 +1,5 @@
-# `ds-test-tools`
+# ds-test-tools [![Clojure CI](https://github.com/oscaro/ds-test-tools/actions/workflows/clojure.yml/badge.svg)](https://github.com/oscaro/ds-test-tools/actions/workflows/clojure.yml) [![Clojars Project](https://img.shields.io/clojars/v/com.oscaro/ds-test-tools.svg)](https://clojars.org/com.oscaro/ds-test-tools)
+
 
 `ds-test-tools` is a small library to help test [Datasplash][] pipelines.
 
