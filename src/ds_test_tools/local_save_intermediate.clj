@@ -92,13 +92,22 @@
 
 
 (defn save!
-  "Calls `f`, saving in/out of every transform in `names` to `dir`."
+  "Calls `f`, saving in/out of every transform in `names` to `dir`.
+  `f` should run some local test pipeline. It should be blocking, ie
+  call `ds/wait-pipeline-result`.
+  `names` can be a collection of transform names, or it can be `:all`
+  in which case every transform with a keyword name will be saved.
+  (some internal transforms can't be saved, and these have string names,
+  so as a workaround we filter out those that don't have a keyword name).
+  `dir` will be tilde expanded for convenience.
+  Note : it might take a while and eat your ram/cpu."
   [f names dir]
-  (let [tilde-expanded (tio/expand-home dir)]
+  (let [dir (tio/expand-home dir)
+        names (cond-> names (sequential? names) set)]
     (binding [*names* names
-              *dir* tilde-expanded]
+              *dir* dir]
       (with-redefs-fn {#'ds-core/apply-transform apply-transform} f))
-    (format-and-rename tilde-expanded))
+    (format-and-rename dir))
   :done)
 
 (defn list-transforms
