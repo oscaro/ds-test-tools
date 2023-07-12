@@ -3,7 +3,7 @@
   :url "https://github.com/oscaro/ds-test-tools"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.10.0"]
+  :dependencies [[org.clojure/clojure "1.11.1"]
                  [datasplash          "0.7.10"]
                  [com.oscaro/tools-io "0.3.26"]]
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
