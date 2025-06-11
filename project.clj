@@ -1,11 +1,12 @@
-(defproject com.oscaro/ds-test-tools "0.2.2"
+(defproject com.oscaro/ds-test-tools "0.2.3-SNAPSHOT"
   :description "Tools to test Datasplash pipelines"
   :url "https://github.com/oscaro/ds-test-tools"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.11.0"]
-                 [datasplash          "0.7.23"]
-                 [com.oscaro/tools-io "0.3.26"]]
+  :dependencies [[org.clojure/clojure "1.12.1"]
+                 [datasplash          "0.7.30"]
+                 [com.oscaro/tools-io "0.3.41"]
+                 [com.github.luben/zstd-jni "1.5.7-3"]]
   :deploy-repositories [["snapshots" {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
@@ -13,7 +14,8 @@
                         ["releases"  {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
-                                      :sign-releases false}]]
+                                      :sign-releases true}]]
+  :signing {:gpg-key "github-cicd@oscaro.com"}
   :aot :all
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :plugins [[lein-codox "0.10.2"]]

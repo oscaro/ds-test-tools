@@ -8,7 +8,7 @@
 ## Usage
 
 ```clojure
-[com.oscaro/ds-test-tools "0.2.1"]
+[com.oscaro/ds-test-tools "0.2.2"]
 ```
 
 Then:
@@ -100,7 +100,7 @@ provide a function of two (readers) or three (writers) arguments:
 
 ## License
 
-Copyright © 2018-2019 Oscaro
+Copyright © 2018-2025 Oscaro
 
 Distributed under the Eclipse Public License either version 1.0 or (at your
 option) any later version.
