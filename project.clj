@@ -13,7 +13,8 @@
                         ["releases"  {:url "https://repo.clojars.org"
                                       :username :env/clojars_username
                                       :password :env/clojars_password
-                                      :sign-releases false}]]
+                                      :sign-releases true}]]
+  :signing {:gpg-key "github-cicd@oscaro.com"}
   :aot :all
   :profiles {:dev {:global-vars {*warn-on-reflection* true}
                    :plugins [[lein-codox "0.10.2"]]
