@@ -8,7 +8,7 @@
 ## Usage
 
 ```clojure
-[com.oscaro/ds-test-tools "0.2.2"]
+[com.oscaro/ds-test-tools "0.3.0"]
 ```
 
 Then:
